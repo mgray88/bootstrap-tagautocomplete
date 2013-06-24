@@ -76,7 +76,7 @@ $(function () {
         equals(tagautocomplete.$menu[0].style.position, 'absolute', 'absolute position')
         ok(tagautocomplete.$menu[0].style.left, 'has left set')
         ok(tagautocomplete.$menu[0].style.top, 'has top set')
-        
+
         $div.remove()
         tagautocomplete.$menu.remove()
       })
@@ -254,7 +254,7 @@ $(function () {
               source: ['@aa', '@bb', '@cc']
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('s a')
         setCaretPosition($div[0], 3)
         tagautocomplete.lookup()
@@ -274,7 +274,7 @@ $(function () {
               source: ['@aa', '@bb', '@cc']
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('s @b @a')
         setCaretPosition($div[0], 4)
         tagautocomplete.lookup()
@@ -289,7 +289,7 @@ $(function () {
               source: ['@aaa', '@bbb', '@ccc']
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('@bb a')
         setCaretPosition($div[0], 3)
         tagautocomplete.lookup()
@@ -304,7 +304,7 @@ $(function () {
               source: ['@aaa', '@b_-9', '@ccc']
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('@b_-9 a')
         setCaretPosition($div[0], 5)
         tagautocomplete.lookup()
@@ -319,7 +319,7 @@ $(function () {
               source: ['@aaa', '@bbb', '@ccc']
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('ss @A')
         setCaretPosition($div[0], 5)
         tagautocomplete.lookup()
@@ -335,7 +335,7 @@ $(function () {
               character: '#'
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('#bb a')
         setCaretPosition($div[0], 3)
         tagautocomplete.lookup()
@@ -351,7 +351,7 @@ $(function () {
               character: '@#'
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('#bb a')
         setCaretPosition($div[0], 3)
         tagautocomplete.lookup()
@@ -371,11 +371,11 @@ $(function () {
               source: ['@bbc', '@bbb', '@ccc']
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('s @b a')
         setCaretPosition($div[0], 4)
         tagautocomplete.lookup()
-        
+
         ok(tagautocomplete.$menu.is(":visible"), 'tagautocomplete is visible')
         equals(tagautocomplete.$menu.find('li').length, 2, 'has 2 items in menu')
         equals(tagautocomplete.$menu.find('.active').length, 1, 'one item is active')
@@ -393,11 +393,11 @@ $(function () {
               }
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('s @b a @b')
         setCaretPosition($div[0], 4)
         tagautocomplete.lookup()
-        
+
         $div.change(function() { changed = true });
         $div.focus(function() { focused = true; blured = false });
         $div.blur(function() { blured = true; focused = false });
@@ -423,11 +423,11 @@ $(function () {
               }
             }).appendTo('body')
           , tagautocomplete = $div.data('tagautocomplete')
-        
+
         $div.text('s @b a @b')
         setCaretPosition($div[0], 4)
         tagautocomplete.lookup()
-        
+
         // simulate entire key pressing event of ENTER
         $div.trigger({
           type: 'keydown'
@@ -449,6 +449,32 @@ $(function () {
 
         $div.remove()
         tagautocomplete.$menu.remove()
-      })    
+      })
+
+      test("subsequent lines should have correct cursor placement", function () {
+        var $div = $('<div contenteditable="true"  />').tagautocomplete({
+              source: function () {
+                return ['@aa', '@ab', '@ac']
+              }
+            }).appendTo('body')
+          , tagautocomplete = $div.data('tagautocomplete')
+
+        $div.html('hello world!<br><div>@a</div>')
+
+        setCaretPosition($div.children('div')[0], 2)
+        equals(getCaretPosition($div[0]), 14, 'caret position correctly set')
+
+        setCaretPosition($div[0], 14)
+        equals(getCaretPosition($div.children('div')[0]), 2, 'care position correctly set')
+
+        tagautocomplete.lookup()
+        ok(tagautocomplete.$menu.is(":visible"), 'tagautocomplete is visible')
+
+        $(tagautocomplete.$menu.find('li')[2]).mouseover().click()
+        equals($div.html(), 'hello world!<br><div>@ac </div>')
+
+        $div.remove()
+        tagautocomplete.$menu.remove()
+      })
 
 })
